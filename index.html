@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Contributions Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fab fa-github"></i> GitHub Contributions Viewer</h1>
+            <p class="subtitle">Enter a GitHub username to view their contribution activity and statistics</p>
+        </header>
+        
+        <section class="search-section">
+            <form id="githubForm" class="search-form">
+                <div class="input-group">
+                    <label for="username">GitHub Username</label>
+                    <input type="text" id="username" placeholder="e.g., phototix" value="phototix" required>
+                </div>
+                <button type="submit" id="submitBtn">
+                    <i class="fas fa-search"></i> Get Contributions
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Fetching GitHub data...</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </section>
+        
+        <section class="results-section" id="resultsSection">
+            <div class="user-info" id="userInfo">
+                <!-- User info will be populated here -->
+            </div>
+            
+            <div class="contributions-container">
+                <h2 class="section-title">Contributions Calendar</h2>
+                <div class="contributions-calendar">
+                    <div id="calendarGrid" class="calendar-grid">
+                        <!-- Calendar will be populated here -->
+                    </div>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #161b22;"></div>
+                            <span>Less</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #0e4429;"></div>
+                            <span>More</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contributions-summary">
+                    <div class="summary-card">
+                        <div class="summary-value" id="totalContributions">0</div>
+                        <div class="summary-label">Total Contributions</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="currentStreak">0</div>
+                        <div class="summary-label">Current Streak</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="longestStreak">0</div>
+                        <div class="summary-label">Longest Streak</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="dailyAverage">0</div>
+                        <div class="summary-label">Daily Average</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>GitHub Contributions Viewer &copy; 2023 | Uses the GitHub API to fetch public user data</p>
+            <p>Note: This tool only works for public GitHub profiles</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
