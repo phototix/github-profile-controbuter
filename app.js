@@ -133,24 +133,16 @@ function displayContributions(data) {
     let longestStreak = 0;
     let tempStreak = 0;
     
-    // Create calendar days
+    // Find the first Sunday before or on the first contribution date
+    const firstDate = new Date(data.contributions[0].date);
+    const firstDayOfWeek = firstDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    // Create a map of dates to contributions for easy lookup
+    const contributionMap = new Map();
     data.contributions.forEach(day => {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
+        contributionMap.set(day.date, day.count);
         
-        // Determine color based on contribution count
-        let colorIndex;
-        if (day.count === 0) colorIndex = 0;
-        else if (day.count <= 2) colorIndex = 1;
-        else if (day.count <= 4) colorIndex = 2;
-        else if (day.count <= 6) colorIndex = 3;
-        else colorIndex = 4;
-        
-        dayElement.style.backgroundColor = colorScale[colorIndex];
-        dayElement.setAttribute('data-count', day.count);
-        dayElement.setAttribute('data-date', day.date);
-        
-        // Calculate streaksI see the code was cut off
+        // Calculate streaks
         if (day.count > 0) {
             tempStreak++;
             currentStreak = Math.max(currentStreak, tempStreak);
@@ -158,9 +150,54 @@ function displayContributions(data) {
             longestStreak = Math.max(longestStreak, tempStreak);
             tempStreak = 0;
         }
-        
-        calendarGrid.appendChild(dayElement);
     });
+    
+    // Calculate number of weeks to display
+    const lastDate = new Date(data.contributions[data.contributions.length - 1].date);
+    const totalDays = Math.ceil((lastDate - firstDate) / (1000 * 60 * 60 * 24)) + 1;
+    const totalWeeks = Math.ceil((totalDays + firstDayOfWeek) / 7);
+    
+    // Create columns for each week
+    for (let week = 0; week < totalWeeks; week++) {
+        const weekColumn = document.createElement('div');
+        weekColumn.className = 'calendar-week';
+        
+        // Create 7 days (rows) for each week
+        for (let day = 0; day < 7; day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            
+            // Calculate the actual date for this cell
+            const cellDate = new Date(firstDate);
+            cellDate.setDate(firstDate.getDate() - firstDayOfWeek + (week * 7) + day);
+            const cellDateStr = cellDate.toISOString().split('T')[0];
+            
+            // Check if this date is in our contribution range
+            if (contributionMap.has(cellDateStr)) {
+                const count = contributionMap.get(cellDateStr);
+                
+                // Determine color based on contribution count
+                let colorIndex;
+                if (count === 0) colorIndex = 0;
+                else if (count <= 2) colorIndex = 1;
+                else if (count <= 4) colorIndex = 2;
+                else if (count <= 6) colorIndex = 3;
+                else colorIndex = 4;
+                
+                dayElement.style.backgroundColor = colorScale[colorIndex];
+                dayElement.setAttribute('data-count', count);
+                dayElement.setAttribute('data-date', cellDateStr);
+            } else {
+                // Empty cell (outside date range)
+                dayElement.style.backgroundColor = 'transparent';
+                dayElement.style.border = 'none';
+            }
+            
+            weekColumn.appendChild(dayElement);
+        }
+        
+        calendarGrid.appendChild(weekColumn);
+    }
     
     // Update longest streak one more time in case the last day had contributions
     longestStreak = Math.max(longestStreak, tempStreak);

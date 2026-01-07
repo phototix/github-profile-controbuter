@@ -218,6 +218,12 @@ button:hover {
     margin-top: 10px;
 }
 
+.calendar-week {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
 .calendar-day {
     width: 12px;
     height: 12px;
